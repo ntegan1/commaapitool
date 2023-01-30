@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -euo pipefail
+
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+
+jwt="$(cat "${credentials_dir}/jwt")"
+dongle="$(cat "${credentials_dir}/dongle")"
+
+route="$1"
+
+re='^'
+re+='([0-9]{4}-[0-9]{2}-[0-9]{2})' # route date
+re+='--'
+re+='([0-9]{2}-[0-9]{2}-[0-9]{2})' # route time
+re+='--'
+re+='([0-9]*)' # segment num
+re+='/'
+re+='(.*)' # file name
+re+='$'
+
+# on device files for route
+athena_method_list_data_directory "${jwt}" "${dongle}" | \
+  jq -r '.result[]' | grep -E "${re}" | grep "^${route}" | sort
+
+

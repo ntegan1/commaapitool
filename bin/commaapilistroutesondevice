@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -euo pipefail
+
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+
+jwt="$(cat "${credentials_dir}/jwt")"
+dongle="$(cat "${credentials_dir}/dongle")"
+
+#athena_method_list_data_directory "${jwt}" "${dongle}"
+#{
+#  "result": [
+#    "2023-01-24--13-09-53--3/fcamera.hevc",
+#    "2023-01-24--13-09-53--3/dcamera.hevc",
+#    "2023-01-26--17-15-06--11/ecamera.hevc"
+#  ],
+#  "id": "ffffffffffffffffffffffffffffffffffff",
+#  "jsonrpc": "2.0"
+#}
+
+#athena_method_list_data_directory "${jwt}" "${dongle}" | \
+#  jq -r '.result[]' | sed -En 's/^([0-9]{4}-[0-9]{2}-[0-9]{2})--([0-9]{2}-[0-9]{2}-[0-9]{2})--([0-9]*)\/(.*)$/\1--\2/gp' | sort | uniq
+re='^'
+re+='([0-9]{4}-[0-9]{2}-[0-9]{2})' # route date
+re+='--'
+re+='([0-9]{2}-[0-9]{2}-[0-9]{2})' # route time
+re+='--'
+re+='([0-9]*)' # segment num
+re+='/'
+re+='(.*)' # file name
+re+='$'
+
+# on device routes
+athena_method_list_data_directory "${jwt}" "${dongle}" | \
+  jq -r '.result[]' | sed -En 's|'"${re}"'|\1--\2|gp' | sort | uniq
+
+
