@@ -12,6 +12,12 @@ function athena_method_list_data_directory {
   athena_message='{"method":"listDataDirectory","params":{},"jsonrpc":"2.0","id":0}'
   athena_request "${jwt}" "${dongle}" "${athena_message}"
 }
+function athena_method_list_upload_queue {
+  jwt="${1}"
+  dongle="${2}"
+  athena_message='{"method":"listUploadQueue","params":{},"jsonrpc":"2.0","id":0}'
+  athena_request "${jwt}" "${dongle}" "${athena_message}"
+}
 function request {
   url=https://api.commadotai.com/
   jwt="${1}"
