@@ -12,6 +12,6 @@ dongle="$(cat "${credentials_dir}/dongle")"
 
 file="$1"
 
-url="$(request_upload_url_creation "${jwt}" "${dongle}" "${file}")"
+url="$(request_upload_url_creation "${jwt}" "${dongle}" "${file}" | jq -r '.url')"
 athena_method_upload_file_to_url "${jwt}" "${dongle}" "${file}" "${url}"
 
