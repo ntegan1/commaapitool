@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -euo pipefail
+
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+
+function urlparsepath() {
+  python3 -c 'import urllib.parse; import sys; print(urllib.parse.urlparse(sys.stdin.read()).path)'
+}
+function standardize_uploaded_path() {
+  uploadedpath="$(cat)"
+  filename="$(basename "${uploadedpath}")"
+  segmentnum="$(basename "$(dirname "${uploadedpath}")")"
+  standardized_path="${route}--${segmentnum}/${filename}"
+  echo "${standardized_path}"
+}
+function print_qlogs() {
+  echo "${result}" | jq -r '.qlogs[]' | \
+    while read -r line; do
+      #/qlog/a152dad3c3368320/2023-01-21--15-09-41/9/qlog.bz2
+      uploadedpath="$(echo "${line}" | urlparsepath)"
+      filename="$(basename "${uploadedpath}")"
+      segmentnum="$(basename "$(dirname "${uploadedpath}")")"
+      standardized_path="${route}--${segmentnum}/${filename}"
+      echo "${standardized_path}"
+    done
+}
+function print_qcameras() {
+  echo "${result}" | jq -r '.qcameras[]' | \
+    while read -r line; do
+      #/qlog/a152dad3c3368320/2023-01-21--15-09-41/9/qcamera.ts
+      uploadedpath="$(echo "${line}" | urlparsepath)"
+      echo "${uploadedpath}" | standardize_uploaded_path
+    done
+}
+
+jwt="$(cat "${credentials_dir}/jwt")"
+dongle="$(cat "${credentials_dir}/dongle")"
+
+route="$1"
+routefull="${dongle}|${route}"
+
+result="$(request_uploaded_files_for_route "${jwt}" "${routefull}")"
+
+
+print_qlogs
+print_qcameras
+
+#/commadata2/a152dad3c3368320/2023-01-21--15-09-41/0/fcamera.hevc
+#echo $a | python3 -c 'import urllib.parse; import sys; print(urllib.parse.urlparse(sys.stdin.read()).path)'
+#/commadata2/a152dad3c3368320/2023-01-21--15-09-41/0/fcamera.hevc
