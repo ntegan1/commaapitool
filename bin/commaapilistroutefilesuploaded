@@ -22,7 +22,7 @@ function print_qlogs() {
     while read -r line; do
       #/qlog/a152dad3c3368320/2023-01-21--15-09-41/9/qlog.bz2
       uploadedpath="$(echo "${line}" | urlparsepath)"
-      echo "${uploadedpath}" | standardize_uploaded_path
+      echo "${uploadedpath}" | standardize_uploaded_path | sed 's/qlog\.bz2$/qlog/g'
     done
 }
 function print_qcameras() {
@@ -55,6 +55,13 @@ function print_dcameras() {
       echo "${uploadedpath}" | standardize_uploaded_path
     done
 }
+function print_logs() {
+  echo "${result}" | jq -r '.logs[]' | \
+    while read -r line; do
+      uploadedpath="$(echo "${line}" | urlparsepath)"
+      echo "${uploadedpath}" | standardize_uploaded_path | sed 's/rlog\.bz2$/rlog/g'
+    done
+}
 
 jwt="$(cat "${credentials_dir}/jwt")"
 dongle="$(cat "${credentials_dir}/dongle")"
@@ -66,8 +73,10 @@ result="$(request_uploaded_files_for_route "${jwt}" "${routefull}")"
 
 
 print_qlogs
+print_logs
 print_qcameras
 print_fcameras
 print_ecameras
 print_dcameras
 
+# comm -32 <(commaapilistroutefilesondevice "${route}" | sort) <(commaapilistroutefilesuploaded "${route}" | sort)
