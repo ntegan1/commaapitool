@@ -44,6 +44,8 @@ function request_upload_url_creation {
   dongle="${2}"
   filename="${3}"
   expire_date_days=1
+  filename="$(echo "$filename" | sed -E 's/rlog$/rlog.bz2/g')"
+  filename="$(echo "$filename" | sed -E 's/qlog$/qlog.bz2/g')"
   request "${jwt}" v1.4/"${dongle}"/upload_url/"?path=${filename}&expiry_days=${expire_date_days}"
 }
 
