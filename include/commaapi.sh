@@ -48,4 +48,8 @@ function request_upload_url_creation {
   filename="$(echo "$filename" | sed -E 's/qlog$/qlog.bz2/g')"
   request "${jwt}" v1.4/"${dongle}"/upload_url/"?path=${filename}&expiry_days=${expire_date_days}"
 }
-
+function request_segments_for_route {
+  jwt="${1}"
+  routefull="${2}" # "<dongle>|<route>"
+  request "${jwt}" v1/route/"${routefull}"/segments
+}

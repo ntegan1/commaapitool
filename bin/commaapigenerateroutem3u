@@ -1,0 +1,58 @@
+#!/bin/bash
+
+set -euo pipefail
+
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+function m3u_header() {
+  echo '#EXTM3U'
+  echo '#EXT-X-VERSION:3'
+  echo '#EXT-X-TARGETDURATION:61'
+  echo '#EXT-X-MEDIA-SEQUENCE:0'
+  echo '#EXT-X-PLAYLIST-TYPE:VOD'
+  echo
+}
+function m3u_item() {
+  duration="$1"
+  number="$2"
+  link="$3"
+  echo "#EXTINF:${duration},${number}"
+  echo "${link}"
+}
+function m3u_footer() {
+  echo '#EXT-X-ENDLIST'
+}
+function urlparsepath() {
+  python3 -c 'import urllib.parse; import sys; print(urllib.parse.urlparse(sys.stdin.read()).path)'
+}
+function standardize_uploaded_path() {
+  uploadedpath="$(cat)"
+  filename="$(basename "${uploadedpath}")"
+  segmentnum="$(basename "$(dirname "${uploadedpath}")")"
+  standardized_path="${route}--${segmentnum}/${filename}"
+  echo "${standardized_path}"
+}
+function print_fcameras() {
+  echo "${result}" | jq -r '.cameras[]' | \
+    while read -r line; do
+      #/commadata2/a152dad3c3368320/2023-01-21--15-09-41/0/fcamera.hevc
+      uploadedpath="$(echo "${line}" | urlparsepath)"
+      echo "${uploadedpath}" | standardize_uploaded_path
+    done
+}
+
+jwt="$(cat "${credentials_dir}/jwt")"
+dongle="$(cat "${credentials_dir}/dongle")"
+
+route="$1"
+routefull="${dongle}|${route}"
+camtype="$2" # d,e,f | dcamera,fcamera,ecamera
+result="$(request_uploaded_files_for_route "${jwt}" "${routefull}")"
+print_fcameras
+
+# TODO: get uploaded vids, calc duration from segment utc
+# timestamp millis in request_segments_for_route
+
+request_segments_for_route "${jwt}" "${routefull}"
