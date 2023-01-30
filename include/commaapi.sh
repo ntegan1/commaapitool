@@ -8,6 +8,7 @@ function athena_request {
 function athena_method_list_data_directory {
   jwt="${1}"
   dongle="${2}"
+  #,"params":{"prefix": "boot"},
   athena_message='{"method":"listDataDirectory","params":{},"jsonrpc":"2.0","id":0}'
   athena_request "${jwt}" "${dongle}" "${athena_message}"
 }
