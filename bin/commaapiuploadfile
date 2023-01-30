@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+
+jwt="$(cat "${credentials_dir}/jwt")"
+dongle="$(cat "${credentials_dir}/dongle")"
+
+file="$1"
+
+url="$(request_upload_url_creation "${jwt}" "${dongle}" "${file}" | jq -r '.url')"
+athena_method_upload_file_to_url "${jwt}" "${dongle}" "${file}" "${url}"
+
