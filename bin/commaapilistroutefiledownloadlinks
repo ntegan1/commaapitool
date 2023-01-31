@@ -3,6 +3,7 @@
 set -euo pipefail
 
 whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+out_dir="${whereami}/../out"
 include_dir="${whereami}/../include"
 credentials_dir="${whereami}/../etc/credentials"
 source "${include_dir}/commaapi.sh"
@@ -27,9 +28,10 @@ function print_qlogs() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo "$line"
       echo $filename
-      test -f "${filename}" && continue
+      outfilepath="${out_dir}/${filename}"
+      test -f "${outfilepath}" && continue
       true
-      wget "${line}" -o "${filename}" &
+      wget "${line}" -O "${outfilepath}" &
     done
 }
 function print_qcameras() {
@@ -41,9 +43,10 @@ function print_qcameras() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo "$line"
       echo $filename
-      test -f "${filename}" && continue
+      outfilepath="${out_dir}/${filename}"
+      test -f "${outfilepath}" && continue
       true
-      wget "${line}" -o "${filename}" &
+      wget "${line}" -O "${outfilepath}" &
     done
 }
 function print_fcameras() {
@@ -55,9 +58,10 @@ function print_fcameras() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo "$line"
       echo $filename
-      test -f "${filename}" && continue
+      outfilepath="${out_dir}/${filename}"
+      test -f "${outfilepath}" && continue
       true
-      wget "${line}" -o "${filename}" &
+      wget "${line}" -O "${outfilepath}" &
     done
 }
 function print_ecameras() {
@@ -68,9 +72,10 @@ function print_ecameras() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo "$line"
       echo $filename
-      test -f "${filename}" && continue
+      outfilepath="${out_dir}/${filename}"
+      test -f "${outfilepath}" && continue
       true
-      wget "${line}" -o "${filename}" &
+      wget "${line}" -O "${outfilepath}" &
     done
 }
 function print_dcameras() {
@@ -81,9 +86,10 @@ function print_dcameras() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo "$line"
       echo $filename
-      test -f "${filename}" && continue
+      outfilepath="${out_dir}/${filename}"
+      test -f "${outfilepath}" && continue
       true
-      wget "${line}" -o "${filename}" &
+      wget "${line}" -O "${outfilepath}" &
     done
 }
 function print_logs() {
@@ -95,9 +101,10 @@ function print_logs() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo "$line"
       echo $filename
-      test -f "${filename}" && continue
+      outfilepath="${out_dir}/${filename}"
+      test -f "${outfilepath}" && continue
       true
-      wget "${line}" -o "${filename}" &
+      wget "${line}" -O "${outfilepath}" &
     done
 }
 
@@ -110,9 +117,9 @@ routefull="${dongle}|${route}"
 result="$(request_uploaded_files_for_route "${jwt}" "${routefull}")"
 
 
-#print_qlogs
+print_qlogs
 print_logs
-#print_qcameras
+print_qcameras
 print_fcameras
 print_ecameras
 print_dcameras
