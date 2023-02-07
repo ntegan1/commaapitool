@@ -26,7 +26,7 @@ function print_qlogs() {
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/qlog\.bz2$/qlog/g')"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      echo "$line"
+      #echo "$line"
       echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
@@ -41,7 +41,7 @@ function print_qcameras() {
       uploadedpath="$(echo "${line}" | urlparsepath)"
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      echo "$line"
+      #echo "$line"
       echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
@@ -56,7 +56,7 @@ function print_fcameras() {
       uploadedpath="$(echo "${line}" | urlparsepath)"
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      echo "$line"
+      #echo "$line"
       echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
@@ -70,7 +70,7 @@ function print_ecameras() {
       uploadedpath="$(echo "${line}" | urlparsepath)"
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      echo "$line"
+      #echo "$line"
       echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
@@ -84,7 +84,7 @@ function print_dcameras() {
       uploadedpath="$(echo "${line}" | urlparsepath)"
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      echo "$line"
+      #echo "$line"
       echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
@@ -99,7 +99,7 @@ function print_logs() {
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/rlog\.bz2$/rlog/g')"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      echo "$line"
+      #echo "$line"
       echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
