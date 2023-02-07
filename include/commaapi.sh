@@ -39,6 +39,28 @@ function request_uploaded_files_for_route {
   routefull="${2}" # "<dongle>|<route>"
   request "${jwt}" v1/route/"${routefull}"/files
 }
+function date_to_epoch_millis() {
+  date_in="${1}"
+  secs=$(date -d "${date_in}" +%s)
+  echo $((secs * 1000))
+}
+function epoch_millis_n_days_ago() {
+  n_days="${1}"
+	nowsecs=$(date "+%s")
+  from_secs=$((nowsecs - (n_days * 24 * 60 * 60)))
+  #from_date="$(date_to_epoch_millis "$(date -d "@${from_secs}")")"
+  from="$((from_secs * 1000))"
+  echo $from
+}
+function request_routes_last_n_days() {
+  jwt="${1}"
+  dongle="${2}"
+  n_days="${3}"
+  #routefull="${2}" # "<dongle>|<route>"
+  from=$(epoch_millis_n_days_ago ${n_days})
+  request "${jwt}" v1/devices/${dongle}/segments?from=${from}
+  #request v1/devices/${dong}/segments?from=${from} | jq -r '.[].canonical_route_name' | uniq
+}
 function request_upload_url_creation {
   jwt="${1}"
   dongle="${2}"
