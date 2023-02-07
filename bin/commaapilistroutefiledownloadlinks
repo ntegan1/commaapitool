@@ -26,8 +26,6 @@ function print_qlogs() {
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/qlog\.bz2$/qlog/g')"
       filename="$(echo "$filename" | sed 's/\//--/g')"
-      #echo "$line"
-      echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
       true

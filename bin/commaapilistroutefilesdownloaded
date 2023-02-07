@@ -27,7 +27,7 @@ function print_qlogs() {
       filename="$(echo "$filename" | sed 's/qlog\.bz2$/qlog/g')"
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo $filename
-      exit
+      continue
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
       true
@@ -42,7 +42,7 @@ function print_qcameras() {
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo $filename
-      exit
+      continue
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
       true
@@ -58,7 +58,7 @@ function print_fcameras() {
       filename="$(echo "$filename" | sed 's/\//--/g')"
       #echo "$line"
       echo $filename
-      exit
+      continue
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
       true
@@ -72,7 +72,7 @@ function print_ecameras() {
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo $filename
-      exit
+      continue
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
       true
@@ -86,7 +86,7 @@ function print_dcameras() {
       filename="$(echo "${uploadedpath}" | standardize_uploaded_path)"
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo $filename
-      exit
+      continue
       #echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
@@ -102,7 +102,7 @@ function print_logs() {
       filename="$(echo "$filename" | sed 's/rlog\.bz2$/rlog/g')"
       filename="$(echo "$filename" | sed 's/\//--/g')"
       echo $filename
-      exit
+      continue
       #echo $filename
       outfilepath="${out_dir}/${filename}"
       test -f "${outfilepath}" && continue
