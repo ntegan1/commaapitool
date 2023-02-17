@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+
+route="$1"
+route_files="$(commaapilistroutefiledownloadlinks ${route})"
+dcams=($(echo "${route_files}" | grep dcamera))
+ecams=($(echo "${route_files}" | grep ecamera))
+num="${#dcams[@]}"
+fps=20
+
+iw=1920
+iwq=482
+iwh=964
+ih=1208
+ihq=302
+ihh=604
+filter=""
+filter+="[vid2]scale=${iwh}:${ihh},crop=${iwq}:${ihq}:${iwh}:${ihh}[vid2out];"
+filter+="[vid1][vid2out]overlay=$((iw-iwq)):$((ih-ihq))[vo]"
+
+videos=' '
+for i in `seq 0 $((num - 1))`; do
+  videos+="--{ --no-correct-pts --fps=${fps} "
+  videos+="--force-media-title=segment_${i} "
+  videos+="--title=route_${route} "
+  videos+="${ecams[${i}]} "
+  videos+="--external-file=${dcams[${i}]} "
+  videos+="--lavfi-complex=${filter} --} "
+done
+
+#https://unix.stackexchange.com/questions/591694/can-i-play-a-playlist-of-rear-and-front-dashcam-videos-in-mpv
+
+mpv --no-resume-playback --no-correct-pts --fps=${fps} ${videos}
+
