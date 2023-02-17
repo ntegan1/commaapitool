@@ -15,9 +15,7 @@ ih=1208
 ihq=302
 ihh=604
 filter=""
-#filter+="[vid2]scale=${iwh}:${ihh}, crop=${iwq}:${ihq}:${iwh}:${ihh}[vid2out]; "
 filter+="[vid2]scale=${iwh}:${ihh},crop=${iwq}:${ihq}:${iwh}:${ihh}[vid2out];"
-#filter+="[vid1][vid2out]overlay=$((iw-iwq)):$((ih-ihq))[ovout]; [ovout]setpts=N/(20)[vo]"
 filter+="[vid1][vid2out]overlay=$((iw-iwq)):$((ih-ihq))[vo]"
 
 videos=' '
