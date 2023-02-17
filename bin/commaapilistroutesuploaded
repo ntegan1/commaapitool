@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -euo pipefail
+
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+jwt="$(cat "${credentials_dir}/jwt")"
+dongle="$(cat "${credentials_dir}/dongle")"
+
+# test "$#" = 1 &&
+#last_n_days="$1"
+last_n_days="6"
+
+#result="$(request_uploaded_files_for_route "${jwt}" "${routefull}")"
+
+#epoch_millis_n_days_ago 1
+result="$(request_routes_last_n_days "${jwt}" "${dongle}" "${last_n_days}")"
+#echo "${result}" | jq -r '.[].canonical_route_name' | uniq
+echo "${result}" | jq -r '.[].canonical_route_name' | uniq | cut -d '|' -f 2
+
