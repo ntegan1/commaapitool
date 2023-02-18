@@ -1,0 +1,39 @@
+#!/bin/bash
+set -euo pipefail
+
+route="$1"
+route_files="$(commaapilistroutefiledownloadlinks ${route})"
+dcams=($(echo "${route_files}" | grep dcamera))
+ecams=($(echo "${route_files}" | grep ecamera))
+fcams=($(echo "${route_files}" | grep fcamera))
+num="${#dcams[@]}"
+fps=20
+
+iw=1920
+iwh=964
+ih=1208
+ihh=604
+filter=""
+filter+="[vid3]scale=${iwh}:${ihh}[vid3scale];"
+filter+="[vid2]scale=${iwh}:${ihh}[vid2scale];"
+filter+="[vid1]scale=${iwh}:${ihh}[vid1scale];"
+filter+="[vid1scale][vid2scale]hstack[top];"
+filter+="color=black:${iwh}x${ihh}[vid4scale];"
+filter+="[vid3scale][vid4scale]hstack[bottom];"
+filter+="[top][bottom]vstack[vo]"
+
+videos=' '
+for i in `seq 0 $((num - 1))`; do
+  videos+="--{ --no-correct-pts --fps=${fps} "
+  videos+="--force-media-title=segment_${i} "
+  videos+="--title=route_${route} "
+  videos+="${ecams[${i}]} "
+  videos+="--external-file=${dcams[${i}]} "
+  videos+="--external-file=${fcams[${i}]} "
+  videos+="--lavfi-complex=${filter} --} "
+done
+
+#https://unix.stackexchange.com/questions/591694/can-i-play-a-playlist-of-rear-and-front-dashcam-videos-in-mpv
+
+mpv --no-resume-playback --no-correct-pts --fps=${fps} ${videos}
+
