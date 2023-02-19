@@ -7,7 +7,8 @@ is_bash && \
   test "$0" = "$BASH_SOURCE" && \
   echo please source me instead && \
   exit
-whereami="$(cd $(dirname "$0") && pwd)"
+is_zsh && whereami="$(cd $(dirname "$0") && pwd)"
+is_bash && whereami="$(cd $(dirname "$BASH_SOURCE") && pwd)"
 
 bin_dir="${whereami}/bin"
 
