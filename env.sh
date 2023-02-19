@@ -1,6 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
-whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+test "$0" = "$BASH_SOURCE" && echo please source me instead && exit
+whereami="$(cd $(dirname "$0") && pwd)"
 bin_dir="${whereami}/bin"
 
 if echo "$PATH" | grep -q "${bin_dir}"; then
