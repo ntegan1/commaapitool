@@ -17,7 +17,7 @@ fps=20
 ## by a user.
 ffmpeg_generic_opts=()
 ffmpeg_generic_opts+=(
-  "\-\-protocol_whitelist" "concat,http,https,tls,tcp"
+  "-protocol_whitelist" "concat,http,https,tls,tcp"
 )
 transcode_qp=29 # tested on amd radeon vaapi hevc_vaapi cqp prof
 transcode_frame_scale=0.6
@@ -33,13 +33,12 @@ hwaccel=vaapi # or macOS VideoToolbox
 _ffmpeg_cropscale_transcode_vaapi() {
   in="$1"
   out="$2"
-  scale_vaapi="${transcode_frame_w}:h=${transcode_frame_h}"
+  scale_vaapi="w=${transcode_frame_w}:h=${transcode_frame_h}"
   cmd="ffmpeg "
   cmd+="${ffmpeg_generic_opts[@]} "
-  cmd+="${ffmpeg_generic_opts[@]} "
-  cmd+="-r "$fps" -i "$in" "
   cmd+="-hwaccel vaapi -hwaccel_output_format vaapi "
-  cmd+="-vf 'hwupload,scale_vaapi='"${scale_vaapi}"',format=nv12' "
+  cmd+="-r "$fps" -i "$in" "
+  cmd+="-vf hwupload,scale_vaapi="${scale_vaapi}":format=nv12 "
   cmd+="-c:v hevc_vaapi "
   cmd+="-profile:v main "
   cmd+="-rc_mode CQP "
@@ -48,7 +47,7 @@ _ffmpeg_cropscale_transcode_vaapi() {
 
   echo "$cmd"
   sleep 2
-  "$cmd"
+  $cmd
 
 
 }
