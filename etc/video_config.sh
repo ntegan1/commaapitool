@@ -21,10 +21,8 @@ ffmpeg_generic_opts+=(
 )
 transcode_qp=29 # tested on amd radeon vaapi hevc_vaapi cqp prof
 transcode_frame_scale=0.6
-transcode_frame_x="$((transcode_frame_scale * framew))"
-transcode_frame_x=$((transcode_frame_x))
-transcode_frame_y="$((transcode_frame_scale * frameh))"
-transcode_frame_y=$((transcode_frame_y))
+transcode_frame_x="$(python3 -c 'print(round('"${transcode_frame_scale}"'*'"${framew}"'))')"
+transcode_frame_y="$(python3 -c 'print(round('"${transcode_frame_scale}"'*'"${frameh}"'))')"
 hwaccel=vaapi # or macOS VideoToolbox 
               # or nvdec on nvidia pascal/turing t116
 
