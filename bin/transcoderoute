@@ -19,7 +19,7 @@ gen_fqcamera() {
   out="${out_dir}/${route}--${a}qcamera.mp4"
   test -f "$out" && return
   in="$(echo "${route_files}" | grep "$a"camera.hevc | sort -V)"
-  inn="concat:$(echo "$in" | tr ' ' '|')"
+  inn="concat:$(echo $in | tr ' ' '|')"
 
   echo ffmpeg_cropscale_transcode_vaapi "$inn" "$out"
 }
