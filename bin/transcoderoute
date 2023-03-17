@@ -21,7 +21,7 @@ gen_fqcamera() {
   in="$(echo "${route_files}" | grep "$a"camera.hevc | sort -V)"
   inn="concat:$(echo $in | tr ' ' '|')"
 
-  echo ffmpeg_cropscale_transcode_vaapi "$inn" "$out"
+  ffmpeg_cropscale_transcode_vaapi "$inn" "$out"
 }
 
 a=f
