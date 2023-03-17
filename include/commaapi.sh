@@ -39,6 +39,11 @@ function request_uploaded_files_for_route {
   routefull="${2}" # "<dongle>|<route>"
   request "${jwt}" v1/route/"${routefull}"/files
 }
+function request_segments_for_route {
+  jwt="${1}"
+  routefull="${2}" # "<dongle>|<route>"
+  request "${jwt}" v1/route/"${routefull}"/segments
+}
 function date_to_epoch_millis() {
   date_in="${1}"
   secs=$(date -d "${date_in}" +%s)

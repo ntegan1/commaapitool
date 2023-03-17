@@ -1,0 +1,41 @@
+#!/bin/bash
+set -euo pipefail
+
+route="$1"
+cam="$2"
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+out_dir="${whereami}/../out"
+etc_dir="${whereami}/../etc"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+source "${etc_dir}/video_config.sh"
+mkdir -p "$out_dir"
+
+route_files="$(commaapilistroutefiledownloadlinks ${route})"
+
+gen_fqcamera() {
+  a="$1"
+  out="${out_dir}/${route}--${a}qcamera.mp4"
+  test -f "$out" && return
+  in="$(echo "${route_files}" | grep "$a"camera.hevc | sort -V)"
+  inn="concat:$(echo $in | tr ' ' '|')"
+
+  ffmpeg_cropscale_transcode "$inn" "$out"
+}
+
+a=f
+[[ "$cam" =~ "$a" ]] && gen_fqcamera "$a"
+a=d
+[[ "$cam" =~ "$a" ]] && gen_fqcamera "$a"
+a=e
+[[ "$cam" =~ "$a" ]] && gen_fqcamera "$a"
+
+
+#filter=""
+#filter+="[vid2]scale=${iwh}:${ihh},crop=${iwq}:${ihq}:${iwh}:${ihh}[vid2out];"
+#filter+="[vid1][vid2out]overlay=$((iw-iwq)):$((ih-ihq))[vo]"
+
+#https://unix.stackexchange.com/questions/591694/can-i-play-a-playlist-of-rear-and-front-dashcam-videos-in-mpv
+
+
