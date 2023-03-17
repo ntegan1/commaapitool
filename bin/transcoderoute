@@ -26,6 +26,10 @@ gen_fqcamera() {
 
 a=f
 [[ "$cam" =~ "$a" ]] && gen_fqcamera "$a"
+a=d
+[[ "$cam" =~ "$a" ]] && gen_fqcamera "$a"
+a=e
+[[ "$cam" =~ "$a" ]] && gen_fqcamera "$a"
 
 
 #filter=""
