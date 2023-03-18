@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+
+route="$1"
+whereami="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+out_dir="${whereami}/../out"
+etc_dir="${whereami}/../etc"
+include_dir="${whereami}/../include"
+credentials_dir="${whereami}/../etc/credentials"
+source "${include_dir}/commaapi.sh"
+mkdir -p "$out_dir"
+
+#test -f links || commaapilistroutefiledownloadlinks ${route} > links
+#route_files="$(commaapilistroutefiledownloadlinks ${route})"
+route_files="$(cat links)"
+
+get_rlogs() {
+  # my rlogs are sometimes bz2 sometimes raw
+  are_bz2="n"
+
+  out="${out_dir}/${route}--frlog.bz2"
+  test -f "$out" && return
+  inn="$(echo "${route_files}" | grep rlog | sort -V)"
+  for in in $inn; do
+    filemagic="$(curl "$in" -r "0-2" | dd bs=1 count=2)"
+    test "$filemagic" = "BZ" && are_bz2="y"
+    break;
+  done
+  (
+    for in in $inn; do
+      # works here for compressed rlogs, need to test rawrlogs
+      test "$are_bz2" = "n" && break
+      curl "$in" | bunzip2
+    done
+    for in in $inn; do
+      test "$are_bz2" = "y" && break
+      curl "$in"
+    done
+  ) | bzip2 > "$out"
+}
+
+get_rlogs
+
+
+
