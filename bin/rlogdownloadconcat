@@ -11,8 +11,8 @@ source "${include_dir}/commaapi.sh"
 mkdir -p "$out_dir"
 
 #test -f links || commaapilistroutefiledownloadlinks ${route} > links
-#route_files="$(commaapilistroutefiledownloadlinks ${route})"
-route_files="$(cat links)"
+route_files="$(commaapilistroutefiledownloadlinks ${route})"
+#route_files="$(cat links)"
 
 get_rlogs() {
   # my rlogs are sometimes bz2 sometimes raw
